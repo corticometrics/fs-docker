@@ -7,6 +7,16 @@ Dockerfiles for FreeSurfer (work in progress)
 Dockerfile to build the dev branch of FreeSurfer based on Ubuntu 16.04.3 LTS (Xenial Xerus)
 
 ### Setup
+We want to make a directory structure that looks like:
+```
+├── fs-xenial
+    ├── bin
+    ├── centos6-x86_64-packages
+    ├── freesurfer
+    └── fs-docker
+```
+
+
 ```
 mkdir ./fs-xenial
 cd ./fs-xenial
@@ -30,6 +40,8 @@ cd ..
 ```
 
 ### Go Interacive
+
+Mount the `fs-xenial` directory to `/fs` inside the container; make `/fs` the working directory and preserve UID/GID
 ```
 cd ..
 docker run -it --rm -v ${PWD}/fs-xenial:/fs -w /fs -u ${UID}:${GID} fs-dev-xenial-build:latest /bin/bash
