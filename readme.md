@@ -32,7 +32,7 @@ cd ..
 ### Go Interacive
 ```
 cd ..
-docker run -it --rm -v ${PWD}/fs:/fs -w /fs -u ${UID}:${GID} fs-dev-xenial-build:latest /bin/bash
+docker run -it --rm -v ${PWD}/fs-xenial:/fs -w /fs -u ${UID}:${GID} fs-dev-xenial-build:latest /bin/bash
 ```
 
 Compile freesurfer dev branch inside container:
