@@ -8,7 +8,7 @@ RUN apt-get update && \
       tcsh \
       libtool-bin \
       libtool \
-      automake1.11 \
+      automake \
       gfortran \
       libglu1-mesa-dev \
       libfreetype6-dev \
@@ -28,6 +28,7 @@ RUN apt-get update && \
       libxt6 \
       tcsh \
       perl \
+      vim-common \
       gcc-4.8 \
       g++-4.8 \
       libgfortran-4.8-dev
