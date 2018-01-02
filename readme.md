@@ -18,11 +18,12 @@ cd ./freesurfer
 git fetch
 git checkout dev
 git merge origin/dev
+cd ..
 ```
 
 ### Build/Tag Container
 ```
-git clone ...
+git clone git@github.com:corticometrics/fs-docker.git
 cd ./fs-docker
 docker build -f ./dockerfile.fs-dev-xenial-build -t fs-dev-xenial-build:latest .
 cd ..
@@ -30,6 +31,7 @@ cd ..
 
 ### Go Interacive
 ```
+cd ..
 docker run -it --rm -v ${PWD}/fs:/fs -w /fs -u ${UID}:${GID} fs-dev-xenial-build:latest /bin/bash
 ```
 
