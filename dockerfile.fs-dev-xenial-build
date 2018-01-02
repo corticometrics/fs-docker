@@ -1,0 +1,35 @@
+# Dockerfile to build the dev branch of FreeSurfer
+# Based on Ubuntu 16.04.3 LTS (Xenial Xerus)
+FROM ubuntu:xenial
+
+RUN apt-get update && \
+    apt-get install -y \
+      build-essential \
+      tcsh \
+      libtool-bin \
+      libtool \
+      automake1.11 \
+      gfortran \
+      libglu1-mesa-dev \
+      libfreetype6-dev \
+      uuid-dev \
+      libxmu-dev \
+      libxmu-headers \
+      libxi-dev \
+      libx11-dev \
+      libxml2-utils \
+      libxt-dev \
+      libjpeg62-dev \
+      libxaw7-dev \
+      liblapack-dev \
+      bc \
+      libgomp1 \
+      libxmu6 \
+      libxt6 \
+      tcsh \
+      perl \
+      gcc-4.8 \
+      g++-4.8 \
+      libgfortran-4.8-dev
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 50 && \
+    update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50
