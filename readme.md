@@ -17,9 +17,9 @@ We want to make a directory structure that looks like:
 ```
 
 Where:
-  - `./fs-xenial/bin/` is where the compiled freesurfer binaaries will me installed with `make install`
+  - `./fs-xenial/bin/` is where the compiled freesurfer binaries will be installed with `make install`
   - `./fs-xenial/centos6-x86_64-packages/` is where the pre-compiled libraries go
-  - `./fs-xenial/freesurfer` is the [freesurfer repo](github.com/freesurfer/freesurfer)
+  - `./fs-xenial/freesurfer` is the [freesurfer repo](https://github.com/freesurfer/freesurfer)
   - `./fs-xenial/fs-docker` is this repo.
 
 ```
