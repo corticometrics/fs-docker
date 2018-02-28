@@ -2,9 +2,9 @@
 
 Dockerfiles for FreeSurfer (work in progress)
 
-## fs-dev-xenial-build
+## The `fs-dev-xenial-build` container
 
-Dockerfile to build the dev branch of FreeSurfer based on Ubuntu 16.04.3 LTS (Xenial Xerus)
+The `fs-dev-xenial-build` container is used to build the dev branch of FreeSurfer and is based on Ubuntu 16.04.3 LTS (Xenial Xerus).  It is build from the file `dockerfile.fs-dev-xenial-build`
 
 ### Pre-reqs
 - Install docker
@@ -12,7 +12,7 @@ Dockerfile to build the dev branch of FreeSurfer based on Ubuntu 16.04.3 LTS (Xe
 - Install git-annex
 
 ### Setup
-We want to make a directory structure that looks like:
+Outside the container, we want to make a directory structure that looks like:
 ```
 ├── fs-xenial
     ├── bin
@@ -26,6 +26,8 @@ Where:
   - `./fs-xenial/centos6-x86_64-packages/` is where the pre-compiled libraries go
   - `./fs-xenial/freesurfer` is the [freesurfer repo](https://github.com/freesurfer/freesurfer)
   - `./fs-xenial/fs-docker` is this repo.
+
+The `fs-xenial` directory will get mounted to `/fs` inside the container when it is executed.
 
 ```
 mkdir ~/fs-xenial/bin
@@ -47,6 +49,11 @@ git annex enableremote datasrc
 git annex get --metadata fstags=makecheck . && git annex get --metadata fstags=makeinstall .
 ```
 
+If the annex tags haven't been updated, you might need to run
+```
+git annex get .
+```
+
 ### Build/Tag Container
 ```
 cd ~/fs-xenial
@@ -55,15 +62,16 @@ cd ./fs-docker
 docker build -f ./dockerfile.fs-dev-xenial-build -t fs-dev-xenial-build:latest .
 ```
 
-### Go Interacive
+### Compile freesurfer dev branch inside container:
 
+### Go interactive 
 Mount the `fs-xenial` directory to `/fs` inside the container; make `/fs` the working directory and preserve UID/GID
 ```
 cd ~
 docker run -it --rm -v ${PWD}/fs-xenial:/fs -w /fs -u ${UID}:${GID} fs-dev-xenial-build:latest /bin/bash
 ```
 
-Compile freesurfer dev branch inside container:
+### Compile freesurfer
 ```
 cd ./centos6-x86_64-packages
 ./setup.sh
@@ -73,8 +81,31 @@ cd ../freesurfer
 make -j4
 ```
 
+### Install
 If you've run `git annex get --metadata fstags=makeinstall .` above, you should be able to:
 ```
 make install
 ```
+This should install FreeSurfer to `~/fs-xenial/bin`
+
 Now, type `exit` to exit the container.  You should now have a full freesurfer install dir at `~/fs-xenial/bin`
+
+## fs-dev-xenial-recon-all
+
+The `fs-dev-xenial-recon-all` container is used to build the dev branch of FreeSurfer and is based on Ubuntu 16.04.3 LTS (Xenial Xerus).  It is build from the file `dockerfile.fs-dev-xenial-recon-all`
+
+### Pre-reqs
+- Install docker
+- Obtain FreeSurfer binaries (either by following the steps above to compile or [download](https://surfer.nmr.mgh.harvard.edu/fswiki/DownloadAndInstall))
+- Obtain FreeSurfer subject data to recon
+- Obtain FreeSurfer license (from [here](https://surfer.nmr.mgh.harvard.edu/registration.html)) 
+
+### Setup
+
+Build/Tag Container
+```
+cd ./fs-docker
+docker build -f ./dockerfile.fs-dev-xenial-recon-all -t fs-dev-xenial-recon-all:latest .
+```
+
+The [entrypoint script](entrypoint.fs-dev-xenial-recon-all.bash) for this container looks for the environment variable `FS_KEY` and, if present, will base64-decode the string and store the contents in the file $FREESURFER_HOME/license.txt.  Most of FreeSurfer will not work without this license file.  Obtaining a license file is free and can be applied for [here](https://surfer.nmr.mgh.harvard.edu/registration.html)
