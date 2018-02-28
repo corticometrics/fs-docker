@@ -30,7 +30,7 @@ Where:
 The `fs-xenial` directory will get mounted to `/fs` inside the container when it is executed.
 
 ```
-mkdir ~/fs-xenial/bin
+mkdir -p ~/fs-xenial/bin
 cd ~/fs-xenial
 wget ftp://surfer.nmr.mgh.harvard.edu/pub/dist/fs_supportlibs/prebuilt/centos6_x86_64/centos6-x86_64-packages.tar.gz
 tar zxvf ./centos6-x86_64-packages.tar.gz
