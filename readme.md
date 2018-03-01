@@ -122,7 +122,7 @@ The `fs-dev-xenial-recon-all` container expects:
     - The FreeSurfer subjects directory (`$SUBJECTS_DIR`) should be mounted to `/subjects`
   - The `FS_KEY` environment variable is set to the base64-encoded string of the FreeSurfer license file
 
-#### Examplpe
+#### Example
 
 Suppose:
   - The FreeSurfer install directory lives at `~/fs-xenial/bin`
