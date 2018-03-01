@@ -37,7 +37,7 @@ ENV PATH $FREESURFER_HOME/bin:$PATH
 ## for POSIX compliance-ish https://github.com/freesurfer/freesurfer/pull/83
 # ENV FS_POSIX 1
 ## to supress a `Could not set locale` error when `mri_convert` is run in recon-all
-FS_DISABLE_LANG 1
+ENV FS_DISABLE_LANG 1
 
 # Setup the $FSUBJECTS_DIR dir
 # ------------------------------
