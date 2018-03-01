@@ -132,5 +132,14 @@ Suppose:
 
 Then, the following command will run recon-all on bert:
 ```
-docker run -it --rm -v ${HOME}/fs-xenial/bin:/freesurfer-bin -v /tmp/subjects/:/subjects -w /fs -u ${UID}:${GID} fs-dev-xenial-recon-all:latest /bin/bash
+docker run -it --rm \
+  -v ${HOME}/fs-xenial/bin:/freesurfer-bin \
+  -v /tmp/subjects/:/subjects \
+  -e FS_KEY='cGF1bEBjb3J0aWNvbWV0cmljcy5jb20KMzA0NDQKICpDZ3lrR3o2bnNYaGcKIEZTVXQweHY5UmlGcWMK' \
+  -u ${UID}:${GID} \
+  fs-dev-xenial-recon-all:latest recon-all -all -s bert
 ```
+
+
+
+cGF1bEBjb3J0aWNvbWV0cmljcy5jb20KMzA0NDQKICpDZ3lrR3o2bnNYaGcKIEZTVXQweHY5UmlGcWMK
