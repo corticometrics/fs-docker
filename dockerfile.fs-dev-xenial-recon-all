@@ -42,5 +42,5 @@ ENV PATH $FREESURFER_HOME/bin:$PATH
 VOLUME /subjects
 ENV SUBJECTS_DIR /subjects
 
-ADD docker/entrypoint.fs-dev-xenial-recon-all.bash /usr/local/bin/entrypoint.bash
+ADD entrypoint.fs-dev-xenial-recon-all.bash /usr/local/bin/entrypoint.bash
 ENTRYPOINT ["/usr/local/bin/entrypoint.bash"]

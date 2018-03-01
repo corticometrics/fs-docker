@@ -102,10 +102,35 @@ The `fs-dev-xenial-recon-all` container is used to build the dev branch of FreeS
 
 ### Setup
 
-Build/Tag Container
+#### Build/Tag Container
 ```
 cd ./fs-docker
 docker build -f ./dockerfile.fs-dev-xenial-recon-all -t fs-dev-xenial-recon-all:latest .
 ```
 
-The [entrypoint script](entrypoint.fs-dev-xenial-recon-all.bash) for this container looks for the environment variable `FS_KEY` and, if present, will base64-decode the string and store the contents in the file $FREESURFER_HOME/license.txt.  Most of FreeSurfer will not work without this license file.  Obtaining a license file is free and can be applied for [here](https://surfer.nmr.mgh.harvard.edu/registration.html)
+#### Get `FS_KEY` value
+
+The [entrypoint script](entrypoint.fs-dev-xenial-recon-all.bash) for this container looks for the environment variable `FS_KEY` and, if present, will base64-decode the string and store the contents in the file $FREESURFER_HOME/license.txt.  Most of FreeSurfer will not work without this license file.  
+
+Obtaining a license file is free and can be applied for [here](https://surfer.nmr.mgh.harvard.edu/registration.html).  Once you have the license file, run `cat ./license.txt |base64 -w 0 && echo` to get the string that you should set the `FS_KEY` environment variable to.
+
+### Recon a subject
+
+The `fs-dev-xenial-recon-all` container expects: 
+  - 2 volumes to be mounted.
+    - The FreeSurfer install directory (`$FREESURFER_HOME`) should be mounted to `/freesurfer-bin` 
+    - The FreeSurfer subjects directory (`$SUBJECTS_DIR`) should be mounted to `/subjects`
+  - The `FS_KEY` environment variable is set to the base64-encoded string of the FreeSurfer license file
+
+#### Examplpe
+
+Suppose:
+  - The FreeSurfer install directory lives at `~/fs-xenial/bin`
+  - The FreeSurfer subject directory lives at `/tmp/subjects/`
+    - The FreeSurfer subject directory contains the subdirectory `bert`, which you would like to recon
+  - The `FS_KEY` value is `xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`
+
+Then, the following command will run recon-all on bert:
+```
+docker run -it --rm -v ${HOME}/fs-xenial/bin:/freesurfer-bin -v /tmp/subjects/:/subjects -w /fs -u ${UID}:${GID} fs-dev-xenial-recon-all:latest /bin/bash
+```
