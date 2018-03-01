@@ -139,7 +139,3 @@ docker run -it --rm \
   -u ${UID}:${GID} \
   fs-dev-xenial-recon-all:latest recon-all -all -s bert
 ```
-
-
-
-cGF1bEBjb3J0aWNvbWV0cmljcy5jb20KMzA0NDQKICpDZ3lrR3o2bnNYaGcKIEZTVXQweHY5UmlGcWMK
