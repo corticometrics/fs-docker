@@ -16,14 +16,12 @@ Outside the container, we want to make a directory structure that looks like:
 ```
 ├── fs-xenial
     ├── bin
-    ├── centos6-x86_64-packages
     ├── freesurfer
     └── fs-docker
 ```
 
 Where:
   - `./fs-xenial/bin/` is where the compiled freesurfer binaries will be installed with `make install`
-  - `./fs-xenial/centos6-x86_64-packages/` is where the pre-compiled libraries go
   - `./fs-xenial/freesurfer` is the [freesurfer repo](https://github.com/freesurfer/freesurfer)
   - `./fs-xenial/fs-docker` is this repo.
 
@@ -32,13 +30,9 @@ The `fs-xenial` directory will get mounted to `/fs` inside the container when it
 ```
 mkdir -p ~/fs-xenial/bin
 cd ~/fs-xenial
-wget ftp://surfer.nmr.mgh.harvard.edu/pub/dist/fs_supportlibs/prebuilt/centos6_x86_64/centos6-x86_64-packages.tar.gz
-tar zxvf ./centos6-x86_64-packages.tar.gz
 git clone https://github.com/freesurfer/freesurfer.git ./freesurfer
 cd ./freesurfer
-git fetch
 git checkout dev
-git merge origin/dev
 ```
 
 You can compile freesurfer now, but if you want to install/run it, some additional files are needed:
@@ -54,12 +48,9 @@ If the annex tags haven't been updated, you might need to run
 git annex get .
 ```
 
-### Build/Tag Container
+### Build/Tag Containers
 ```
-cd ~/fs-xenial
-git clone git@github.com:corticometrics/fs-docker.git
-cd ./fs-docker
-docker build -f ./dockerfile.fs-dev-xenial-build -t fs-dev-xenial-build:latest .
+make fs-dev-xenial-build
 ```
 
 ### Compile freesurfer dev branch inside container:
@@ -68,16 +59,17 @@ docker build -f ./dockerfile.fs-dev-xenial-build -t fs-dev-xenial-build:latest .
 Mount the `fs-xenial` directory to `/fs` inside the container; make `/fs` the working directory and preserve UID/GID
 ```
 cd ~
-docker run -it --rm -v ${PWD}/fs-xenial:/fs -w /fs -u ${UID}:${GID} fs-dev-xenial-build:latest /bin/bash
+docker run -it --rm -v ${PWD}/fs-xenial:/fs -w /fs -u ${UID}:${GID} corticometrics/fs-dev-xenial-build:latest /bin/bash
 ```
 
 ### Compile freesurfer
 ```
-cd ./centos6-x86_64-packages
-./setup.sh
-cd ../freesurfer
+cd ./freesurfer
 ./setup_configure
-./configure --prefix=/fs/bin --with-pkgs-dir=/fs/centos6-x86_64-packages --disable-GUI-build --disable-Werror
+cd ./packages
+make build-vxl
+cd ..
+./configure --prefix=/fs/bin --enable-small-build-dist --disable-g
 make -j4
 ```
 
@@ -90,7 +82,7 @@ This should install FreeSurfer to `~/fs-xenial/bin`
 
 Now, type `exit` to exit the container.  You should now have a full freesurfer install dir at `~/fs-xenial/bin`
 
-## fs-dev-xenial-recon-all
+## The `fs-dev-xenial-recon-all` container
 
 The `fs-dev-xenial-recon-all` container is used to build the dev branch of FreeSurfer and is based on Ubuntu 16.04.3 LTS (Xenial Xerus).  It is build from the file `dockerfile.fs-dev-xenial-recon-all`
 

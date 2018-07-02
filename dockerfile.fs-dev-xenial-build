@@ -4,33 +4,35 @@ FROM ubuntu:xenial
 
 RUN apt-get update && \
     apt-get install -y \
+      automake \
+      bc \
       build-essential \
-      tcsh \
+      cmake \
+      g++-4.8 \
+      gcc-4.8 \
+      gfortran \
+      git \
+      libfreetype6-dev \
+      libgfortran-4.8-dev \
+      libglu1-mesa-dev \
+      libjpeg62-dev \
       libtool-bin \
       libtool \
-      automake \
-      gfortran \
-      libglu1-mesa-dev \
-      libfreetype6-dev \
-      uuid-dev \
       libxmu-dev \
       libxmu-headers \
       libxi-dev \
       libx11-dev \
       libxml2-utils \
       libxt-dev \
-      libjpeg62-dev \
       libxaw7-dev \
       liblapack-dev \
-      bc \
+      perl \
       libgomp1 \
       libxmu6 \
       libxt6 \
       tcsh \
-      perl \
-      vim-common \
-      gcc-4.8 \
-      g++-4.8 \
-      libgfortran-4.8-dev
-RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 50 && \
-    update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50
+      uuid-dev \
+      vim-common
+
+#RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 50 && \
+#    update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50
