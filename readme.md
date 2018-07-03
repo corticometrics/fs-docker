@@ -1,8 +1,9 @@
 # fs-docker
 
-Dockerfiles for FreeSurfer (work in progress)
+Dockerfiles for compiling and running FreeSurfer
 
 ## The `fs-dev-xenial-build` container
+-----------------------------------------------------------------------
 
 The `fs-dev-xenial-build` container is used to build the dev branch of FreeSurfer and is based on Ubuntu 16.04.3 LTS (Xenial Xerus).  It is build from the file `dockerfile.fs-dev-xenial-build`
 
@@ -83,6 +84,7 @@ This should install FreeSurfer to `~/fs-xenial/bin`
 Now, type `exit` to exit the container.  You should now have a full freesurfer install dir at `~/fs-xenial/bin`
 
 ## The `fs-dev-xenial-recon-all` container
+-----------------------------------------------------------------------
 
 The `fs-dev-xenial-recon-all` container is used to build the dev branch of FreeSurfer and is based on Ubuntu 16.04.3 LTS (Xenial Xerus).  It is build from the file `dockerfile.fs-dev-xenial-recon-all`
 
@@ -96,8 +98,7 @@ The `fs-dev-xenial-recon-all` container is used to build the dev branch of FreeS
 
 #### Build/Tag Container
 ```
-cd ./fs-docker
-docker build -f ./dockerfile.fs-dev-xenial-recon-all -t fs-dev-xenial-recon-all:latest .
+make fs-dev-xenial-recon-all
 ```
 
 #### Get `FS_KEY` value
@@ -129,5 +130,5 @@ docker run -it --rm \
   -v /tmp/subjects/:/subjects \
   -e FS_KEY='xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' \
   -u ${UID}:${GID} \
-  fs-dev-xenial-recon-all:latest recon-all -all -s bert
+  corticometrics/fs-dev-xenial-recon-all:latest recon-all -all -s bert
 ```
