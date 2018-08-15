@@ -5,7 +5,7 @@ Dockerfiles for compiling and running FreeSurfer
 ## The `fs-dev-xenial-build` container
 -----------------------------------------------------------------------
 
-The `fs-dev-xenial-build` container is used to build the dev branch of FreeSurfer and is based on Ubuntu 16.04.3 LTS (Xenial Xerus).  It is build from the file `dockerfile.fs-dev-xenial-build`
+The `fs-dev-xenial-build` container is used to build the dev branch of FreeSurfer and is based on Ubuntu 16.04.3 LTS (Xenial Xerus).  It is built from the file `dockerfile.fs-dev-xenial-build`
 
 ### Pre-reqs
 - Install docker
@@ -86,12 +86,12 @@ make install
 ```
 This should install FreeSurfer to `/fs/bin` (inside the container)
 
-Now, type `exit` to exit the container.  Since `~/fs-xenial/bin` was mounting inside the container to `/fs/bin`, you should now have a full freesurfer install dir at `~/fs-xenial/bin`
+Now, type `exit` to exit the container.  Since `~/fs-xenial/bin` was mounted inside the container to `/fs/bin`, you should now have a full freesurfer install dir at `~/fs-xenial/bin`
 
 ## The `fs-dev-xenial-recon-all` container
 -----------------------------------------------------------------------
 
-The `fs-dev-xenial-recon-all` container is used to run dev branch version of `recon-all` and is based on Ubuntu 16.04.3 LTS (Xenial Xerus).  It is build from the file `dockerfile.fs-dev-xenial-recon-all`
+The `fs-dev-xenial-recon-all` container is used to run dev branch version of `recon-all` and is based on Ubuntu 16.04.3 LTS (Xenial Xerus).  It is built from the file `dockerfile.fs-dev-xenial-recon-all`
 
 ### Pre-reqs
 - Install docker
