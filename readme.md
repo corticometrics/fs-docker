@@ -63,7 +63,12 @@ cd ~
 docker run -it --rm -v ${PWD}/fs-xenial:/fs -w /fs -u ${UID}:${GID} corticometrics/fs-dev-xenial-build:latest /bin/bash
 ```
 
+You should now have an interactive terminal inside the container.
+
 ### Compile freesurfer
+
+From inside the container, run:
+
 ```
 cd ./freesurfer
 ./setup_configure
@@ -79,9 +84,9 @@ If you've run `git annex get --metadata fstags=makeinstall .` above, you should 
 ```
 make install
 ```
-This should install FreeSurfer to `~/fs-xenial/bin`
+This should install FreeSurfer to `/fs/bin` (inside the container)
 
-Now, type `exit` to exit the container.  You should now have a full freesurfer install dir at `~/fs-xenial/bin`
+Now, type `exit` to exit the container.  Since `~/fs-xenial/bin` was mounting inside the container to `/fs/bin`, you should now have a full freesurfer install dir at `~/fs-xenial/bin`
 
 ## The `fs-dev-xenial-recon-all` container
 -----------------------------------------------------------------------
