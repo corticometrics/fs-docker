@@ -86,7 +86,7 @@ Now, type `exit` to exit the container.  You should now have a full freesurfer i
 ## The `fs-dev-xenial-recon-all` container
 -----------------------------------------------------------------------
 
-The `fs-dev-xenial-recon-all` container is used to build the dev branch of FreeSurfer and is based on Ubuntu 16.04.3 LTS (Xenial Xerus).  It is build from the file `dockerfile.fs-dev-xenial-recon-all`
+The `fs-dev-xenial-recon-all` container is used to run dev branch version of `recon-all` and is based on Ubuntu 16.04.3 LTS (Xenial Xerus).  It is build from the file `dockerfile.fs-dev-xenial-recon-all`
 
 ### Pre-reqs
 - Install docker
