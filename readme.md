@@ -1,6 +1,6 @@
 # fs-docker
 
-Dockerfiles for compiling and running FreeSurfer
+Dockerfiles to support a FreeSurfer development workflow (compiling and running FreeSurfer)
 
 ## The `fs-dev-xenial-build` container
 -----------------------------------------------------------------------
@@ -15,15 +15,17 @@ The `fs-dev-xenial-build` container is used to build the dev branch of FreeSurfe
 ### Setup
 Outside the container, we want to make a directory structure that looks like:
 ```
-├── fs-xenial
+└── fs-xenial
     ├── bin
     ├── freesurfer
-    └── fs-docker
+    ├── fs-docker
+    └── packages
 ```
 
 Where:
   - `./fs-xenial/bin/` is where the compiled freesurfer binaries will be installed with `make install`
   - `./fs-xenial/freesurfer` is the [freesurfer repo](https://github.com/freesurfer/freesurfer)
+  - `./fs/packages` is the required pre-compiled depedencies
   - `./fs-xenial/fs-docker` is this repo.
 
 The `fs-xenial` directory will get mounted to `/fs` inside the container when it is executed.
@@ -31,6 +33,8 @@ The `fs-xenial` directory will get mounted to `/fs` inside the container when it
 ```
 mkdir -p ~/fs-xenial/bin
 cd ~/fs-xenial
+wget http://surfer.nmr.mgh.harvard.edu/pub/data/fspackages/prebuilt/centos7-packages.tar.gz
+tar zxvf centos7-packages.tar.gz
 git clone https://github.com/freesurfer/freesurfer.git ./freesurfer
 cd ./freesurfer
 git checkout dev
@@ -71,12 +75,8 @@ From inside the container, run:
 
 ```
 cd ./freesurfer
-./setup_configure
-cd ./packages
-make build-vxl
-cd ..
-./configure --prefix=/fs/bin --enable-small-build-dist --disable-g
-make -j4
+rm -f CMakeCache.txt
+cmake -DFS_PACKAGES_DIR="/fs/packages" .
 ```
 
 ### Install
