@@ -39,5 +39,5 @@ RUN apt-get update && \
 WORKDIR /tmp/cmake
 RUN wget http://www.cmake.org/files/v3.12/cmake-3.12.0.tar.gz && tar xf cmake-3.12.0.tar.gz && cd cmake-3.12.0 && ./configure && make && make install
 
-#RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 50 && \
-#    update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 50 && \
+    update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50

@@ -77,6 +77,7 @@ From inside the container, run:
 cd ./freesurfer
 rm -f CMakeCache.txt
 cmake -DFS_PACKAGES_DIR="/fs/packages" -DBUILD_GUIS=OFF .
+make -j 4
 ```
 
 ### Install
