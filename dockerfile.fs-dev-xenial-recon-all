@@ -14,6 +14,7 @@ FROM ubuntu:xenial
 RUN apt-get update && \
     apt-get install -y \
       bc \
+      binutils \
       libgomp1 \
       net-tools \
       perl \
