@@ -1,7 +1,7 @@
-all: fs-dev-xenial-build fs-dev-xenial-recon-all
+all: fs-build fs-run
 
-fs-dev-xenial-build:
-	docker build -f dockerfile.fs-dev-xenial-build -t corticometrics/fs-dev-xenial-build .
+fs-build:
+	cd ./build && docker build -t corticometrics/freesurfer-build .
 
-fs-dev-xenial-recon-all:
-	docker build -f dockerfile.fs-dev-xenial-recon-all -t corticometrics/fs-dev-xenial-recon-all .
+fs-run:
+	cd ./run && docker build -t corticometrics/freesurfer-run .
