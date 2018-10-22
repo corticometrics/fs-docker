@@ -45,6 +45,6 @@ ENV FS_DISABLE_LANG 1
 VOLUME /subjects
 ENV SUBJECTS_DIR /subjects
 
-ADD entrypoint.fs-dev-xenial-recon-all.bash /usr/local/bin/entrypoint.bash
+ADD entrypoint.freesurfer-run.bash /usr/local/bin/entrypoint.bash
 RUN chmod +rx /usr/local/bin/entrypoint.bash
 ENTRYPOINT ["/usr/local/bin/entrypoint.bash"]
