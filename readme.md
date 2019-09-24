@@ -2,13 +2,11 @@
 
 Dockerfiles to support:
 - developing FreeSurfer (compiling FreeSurfer from source)
-- running development versions of FreeSurfer (using locally compiled FreeSurfer binaries)
-- running prepackaged versions of FreeSurfer (using pre-built development versions, or released packages of FreeSurfer)
+- running development versions of FreeSurfer
 
+Work in Progress
 
-## *NOTE:* Currently a Work In Progress, everything below here is subject to change
-### The `freesurfer-build` container
------------------------------------------------------------------------
+## Compiling FreeSurfer's dev branch
 
 The `freesufer-build` container is used to build the dev branch of FreeSurfer and is based on Ubuntu 16.04.3 LTS (Xenial Xerus).  It is built from the file `build/Dockerfile`
 
@@ -20,104 +18,97 @@ The `freesufer-build` container is used to build the dev branch of FreeSurfer an
 #### Setup
 Outside the container, we want to make a directory structure that looks like:
 ```
-└── fs-development
+└── basedir
     ├── bin
     ├── freesurfer
     ├── fs-docker
-    └── packages
+    └── pkg
 ```
 
 Where:
-  - `./fs-development/bin/` is where the compiled FreeSurfer binaries will be installed with `make install`
-  - `./fs-development/freesurfer` is the [FreeSurfer repo](https://github.com/freesurfer/freesurfer)
-  - `./fs/packages` is the required pre-compiled depedencies
-  - `./fs-development/fs-docker` is this repo.
+  - `basedir` is the base directory (denoted by $FSBASEDIR below)
+  - `bin` is where the compiled freesurfer binaries will go
+  - `freesurfer` is the FreeSurfer git repo (https://github.com/freesurfer/freesurfer.git)
+  - `fs-docker` is this repo (https://github.com:corticometrics/fs-docker.git)
+  - `pkg` is where FreeSurfer specific pagakes will go.
 
-The `fs-development` directory will get mounted to `/fs` inside the container when it is executed.
+The `basedir` directory will get mounted to `/fs` inside the container when it is executed.
 
+Define the base directory; 
 ```
-mkdir -p ~/fs-development/bin
-cd ~/fs-development
-wget http://surfer.nmr.mgh.harvard.edu/pub/data/fspackages/prebuilt/centos7-packages.tar.gz
-tar zxvf centos7-packages.tar.gz
+export FSBASEDIR="/home/paul/cmet/git/fs/"
+```
+
+Setup the directory structure
+```
+mkdir $FSBASEDIR
+cd $FSBASEDIR
+git clone git@github.com:corticometrics/fs-docker.git
 git clone https://github.com/freesurfer/freesurfer.git ./freesurfer
-cd ./freesurfer
-git checkout dev
+mkdir -p ./pkg
+mkdir -p ./bin
+cd ./freesurfer && git checkout dev
+cd $FSBASEDIR
+cd ./fs-docker && make fs-build
+cd $FSBASEDIR
 ```
 
-You can compile FreeSurfer now, but if you want to install/run it, some additional files are needed:
+Checkout the FreeSurfer git annex (not needed to compile, but to run)
 ```
+cd $FSBASEDIR/freesurfer
 git remote add datasrc https://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/repo/annex.git
 git fetch datasrc
 git annex enableremote datasrc
-git annex get --metadata fstags=makecheck . && git annex get --metadata fstags=makeinstall .
-```
-
-If the annex tags haven't been updated, you might need to run
-```
 git annex get .
 ```
 
-#### Build/Tag Containers
+Jump into the `fs-build` container; mounting `$FSBASEDIR` to `/fs/` inside the container
 ```
-make fs-build
-```
-
-#### Compile FreeSurfer dev branch inside container:
-
-#### Go interactive 
-Mount the `fs-development` directory to `/fs` inside the container; make `/fs` the working directory and preserve UID/GID
-```
-cd ~
 docker run -it --rm \
-  -v ${PWD}/fs-development:/fs \
-  -w /fs \
-  -u ${UID}:${GID} \
+  -v $FSBASEDIR:/fs \
   corticometrics/freesurfer-build:latest \
   /bin/bash
 ```
 
-You should now have an interactive terminal inside the container.
-
-#### Compile FreeSurfer
-
-From inside the container, run:
-
+Inside the `fs-build` container; build needed FreeSurfer packages (only itk needed for recon-all); drop them in `/fs/pkg`
 ```
-cd ./freesurfer
-rm -f CMakeCache.txt
-cmake -DFS_PACKAGES_DIR="/fs/packages" -DBUILD_GUIS=OFF .
-make -j 4
+cd /fs/freesurfer/packages
+./build_packages.py --only-itk /fs/pkg
 ```
 
-#### Install
-If you've run `git annex get --metadata fstags=makeinstall .` above, you should be able to:
+build dev branch of FreeSurfer; put binaries in `/fs/bin`
 ```
-make install
+cd /fs/freesurfer 
+cmake . \
+  -DBUILD_GUIS=OFF \
+  -DMINIMAL=ON \
+  -DMAKE_BUILD_TYPE=Release \
+  -DINSTALL_PYTHON_DEPENDENCIES=OFF \
+  -DDISTRIBUTE_FSPYTHON=OFF \
+  -DCMAKE_INSTALL_PREFIX="/fs/bin" \
+  -DFS_PACKAGES_DIR="/fs/pkg" \
+  -DGFORTRAN_LIBRARIES="/usr/lib/gcc/x86_64-linux-gnu/5/libgfortran.so" && \
+make clean && make -j 8 && make install
 ```
-This should install FreeSurfer to `/fs/bin` (inside the container)
 
-Now, type `exit` to exit the container.  Since `~/fs-development/bin` was mounted inside the container to `/fs/bin`, you should now have a full FreeSurfer install dir at `~/fs-development/bin`
-
-### The `freesurfer-run` container
------------------------------------------------------------------------
+## Running FreeSurfer
 
 The `freesurfer-run` container is used to run dev branch version of `recon-all` and is based on Ubuntu 16.04.3 LTS (Xenial Xerus).  It is built from the file `run/Dockerfile`
 
-#### Pre-reqs
+### Pre-reqs
 - Install docker
 - Obtain FreeSurfer binaries (either by following the steps above to compile or [download](https://surfer.nmr.mgh.harvard.edu/fswiki/DownloadAndInstall))
 - Obtain FreeSurfer subject data to recon
 - Obtain FreeSurfer license (from [here](https://surfer.nmr.mgh.harvard.edu/registration.html)) 
 
-#### Setup
+### Setup
 
-##### Build/Tag Container
+#### Build/Tag Container
 ```
 make fs-run
 ```
 
-##### Get `FS_KEY` value
+#### Get `FS_KEY` value
 
 The [entrypoint script](run/entrypoint.freesurfer-run.bash) for this container looks for the environment variable `FS_KEY` and, if present, will base64-decode the string and store the contents in the file `$FREESURFER_HOME/license.txt`.  Most of FreeSurfer will not work without this license file.  
 
@@ -131,7 +122,7 @@ The `freesurfer-run` container expects:
     - The FreeSurfer subjects directory (`$SUBJECTS_DIR`) should be mounted to `/subjects`
   - The `FS_KEY` environment variable is set to the base64-encoded string of the FreeSurfer license file
 
-##### Example
+#### Example
 
 Suppose:
   - The FreeSurfer install directory lives at `~/fs-development/bin`
