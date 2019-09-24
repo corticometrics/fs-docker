@@ -39,7 +39,7 @@ Define the base directory;
 export FSBASEDIR="/home/paul/cmet/git/fs/"
 ```
 
-Setup the directory structure
+Setup the directory structure; clone repos
 ```
 mkdir $FSBASEDIR
 cd $FSBASEDIR
@@ -48,8 +48,6 @@ git clone https://github.com/freesurfer/freesurfer.git ./freesurfer
 mkdir -p ./pkg
 mkdir -p ./bin
 cd ./freesurfer && git checkout dev
-cd $FSBASEDIR
-cd ./fs-docker && make fs-build
 cd $FSBASEDIR
 ```
 
@@ -62,7 +60,12 @@ git annex enableremote datasrc
 git annex get .
 ```
 
-Jump into the `fs-build` container; mounting `$FSBASEDIR` to `/fs/` inside the container
+Build the `freesurfer-build` docker container
+```
+cd $FSBASEDIR/fs-docker && make fs-build
+```
+
+Jump into the `freesurfer-build` container; mounting `$FSBASEDIR` to `/fs/` inside the container
 ```
 docker run -it --rm \
   -v $FSBASEDIR:/fs \
@@ -70,13 +73,13 @@ docker run -it --rm \
   /bin/bash
 ```
 
-Inside the `fs-build` container; build needed FreeSurfer packages (only itk needed for recon-all); drop them in `/fs/pkg`
+Inside the `freesurfer-build` container; build needed FreeSurfer packages (only itk needed for recon-all); drop them in `/fs/pkg`
 ```
 cd /fs/freesurfer/packages
 ./build_packages.py --only-itk /fs/pkg
 ```
 
-build dev branch of FreeSurfer; put binaries in `/fs/bin`
+Inside the `freesurfer-build` container; build dev branch of FreeSurfer; put binaries in `/fs/bin`
 ```
 cd /fs/freesurfer 
 cmake . \
@@ -90,6 +93,13 @@ cmake . \
   -DGFORTRAN_LIBRARIES="/usr/lib/gcc/x86_64-linux-gnu/5/libgfortran.so" && \
 make clean && make -j 8 && make install
 ```
+
+Now, exit the container
+```
+exit
+```
+
+You should now have compiled FreeSurfer binaries in `$FSBASEDIR/bin`
 
 ## Running FreeSurfer
 
