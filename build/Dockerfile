@@ -2,14 +2,20 @@
 # Based on Ubuntu 16.04 LTS (Xenial Xerus)
 FROM ubuntu:xenial
 
-RUN apt-get update -qq && \
-    apt-get install -y -q \
+RUN apt-get update -qq \
+  && apt-get install -y python3-pip python3-dev \
+  && cd /usr/local/bin \
+  && ln -s /usr/bin/python3 python \
+  && pip3 install --upgrade pip
+
+RUN apt-get install -y -q \
         automake1.11 \
         bc \
         binutils \
         build-essential \
         bzip2 \
         curl \
+        git \
         gfortran \
         libbz2-dev \
         libfreetype6-dev \
@@ -46,12 +52,7 @@ RUN curl -sSL --retry 5 https://cmake.org/files/v3.12/cmake-3.12.3.tar.gz | tar 
     cd cmake-3.12.3 && ./configure && make && make install && cd - && \
     rm -rf cmake-3.12.3
 
-# Install Python 3.6, update pip and wheel
-RUN curl -sSL --retry 5 https://www.python.org/ftp/python/3.6.5/Python-3.6.5.tgz | tar -xz && \
-    cd Python-3.6.5 && ./configure && make -j && make install && cd - && \
-    rm -rf Python-3.6.5 Python-3.6.5.tgz 
-RUN pip3 install -q --no-cache-dir -U pip && \
-    pip3 install -q --no-cache-dir wheel && \
-    sync
+RUN adduser --disabled-password --gecos '' docker && adduser docker sudo
+USER docker
 
-WORKDIR /code
+WORKDIR /fs
