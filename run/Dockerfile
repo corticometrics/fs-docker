@@ -15,6 +15,7 @@ RUN apt-get update && \
     apt-get install -y \
       bc \
       binutils \
+      gfortran \
       libgomp1 \
       net-tools \
       perl \
